@@ -5,7 +5,17 @@
 #include <stdio.h>
 #include <assert.h>
 #include <inttypes.h>
+#if defined(__APPLE__)
+#include <libkern/OSByteOrder.h>
+#ifndef htole32
+#define htole32(x) OSSwapHostToLittleInt32((uint32_t)(x))
+#endif
+#ifndef le32toh
+#define le32toh(x) OSSwapLittleToHostInt32((uint32_t)(x))
+#endif
+#else
 #include <endian.h>
+#endif
 #include <string.h>
 
 /* when reading long integers, never read more than this many bytes: */

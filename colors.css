@@ -1,0 +1,25 @@
+#window {
+  background-color: #f5f7fb;
+}
+
+#transcript {
+  background-color: #ffffff;
+  color: #1f2937;
+}
+
+#message {
+  background-color: #eef2f7;
+  color: #0f172a;
+}
+
+#send {
+  background-color: #0ea5e9;
+  color: #ffffff;
+  border-radius: 6px;
+  border: 1px solid #0284c7;
+  padding: 6px 12px;
+}
+
+#send:hover {
+  background-color: #0284c7;
+}

@@ -8,7 +8,14 @@
 #include <gmp.h>
 #include "dh.h"
 #include <string.h>
+#if defined(__APPLE__)
+#include <libkern/OSByteOrder.h>
+#ifndef htobe64
+#define htobe64(x) OSSwapHostToBigInt64((uint64_t)(x))
+#endif
+#else
 #include <endian.h>
+#endif
 #include <assert.h>
 #include "util.h"
 

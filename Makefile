@@ -9,9 +9,27 @@ CXXFLAGS := $(CXXFLAGS) $(COMMON)
 CC       := gcc
 CXX      := g++
 LD       := $(CC)
+OPENSSL_CFLAGS := $(shell pkg-config --cflags openssl 2>/dev/null)
+OPENSSL_LIBS := $(shell pkg-config --libs openssl 2>/dev/null)
+GMP_CFLAGS := $(shell pkg-config --cflags gmp 2>/dev/null)
+GMP_LIBS := $(shell pkg-config --libs gmp 2>/dev/null)
+
+ifeq ($(strip $(OPENSSL_CFLAGS)),)
+OPENSSL_CFLAGS := -I/opt/homebrew/opt/openssl@3/include -I/usr/local/opt/openssl@3/include
+endif
+ifeq ($(strip $(OPENSSL_LIBS)),)
+OPENSSL_LIBS := -L/opt/homebrew/opt/openssl@3/lib -L/usr/local/opt/openssl@3/lib -lcrypto
+endif
+ifeq ($(strip $(GMP_CFLAGS)),)
+GMP_CFLAGS := -I/opt/homebrew/opt/gmp/include -I/usr/local/opt/gmp/include
+endif
+ifeq ($(strip $(GMP_LIBS)),)
+GMP_LIBS := -L/opt/homebrew/opt/gmp/lib -L/usr/local/opt/gmp/lib -lgmp
+endif
+
 LDFLAGS  := $(LDFLAGS) # -L/path/to/libs/
-LDADD    := -lpthread -lcrypto -lgmp $(shell pkg-config --libs gtk+-3.0)
-INCLUDE  := $(shell pkg-config --cflags gtk+-3.0)
+LDADD    := -lpthread $(OPENSSL_LIBS) $(GMP_LIBS) $(shell pkg-config --libs gtk+-3.0)
+INCLUDE  := $(shell pkg-config --cflags gtk+-3.0) $(OPENSSL_CFLAGS) $(GMP_CFLAGS)
 DEFS     := # -DLINUX
 
 TARGETS  := chat dh-example
