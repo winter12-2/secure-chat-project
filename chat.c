@@ -61,9 +61,15 @@ int initServerNet(int port)
 	if (sockfd < 0)
 		error("error on accept");
 	close(listensock);
-	fprintf(stderr, "connection made, starting session...\n");
+	mpz_t sk, pk;
+mpz_init(sk);
+mpz_init(pk);
+unsigned char shared_key[32];
+fprintf(stderr, "connection made, starting session...\n");
         fprintf(stderr, "DEBUG: Starting handshake...\n");
         fprintf(stderr, "DEBUG: Generating ephemeral DH keys...\n");
+dhGen(sk, pk);
+gmp_fprintf(stderr, "SERVER public key generated: %Zd\n", pk);
         fprintf(stderr, "DEBUG: Deriving shared secret...\n");
 	/* at this point, should be able to send/recv on sockfd */
 	return 0;
@@ -87,9 +93,15 @@ static int initClientNet(char* hostname, int port)
 	serv_addr.sin_port = htons(port);
 	if (connect(sockfd,(struct sockaddr *) &serv_addr,sizeof(serv_addr)) < 0)
 		error("ERROR connecting");
+mpz_t sk, pk;
+mpz_init(sk);
+mpz_init(pk);
+unsigned char shared_key[32];
         fprintf(stderr, "CLIENT: connected to server...\n");
         fprintf(stderr, "CLIENT: starting handshake...\n");
         fprintf(stderr, "CLIENT: generating ephemeral DH keys...\n");
+dhGen(sk, pk);
+gmp_fprintf(stderr, "CLIENT public key generated: %Zd\n", pk);
         fprintf(stderr, "CLIENT: deriving shared secret...\n");
 	/* at this point, should be able to send/recv on sockfd */
 	return 0;
