@@ -62,6 +62,9 @@ int initServerNet(int port)
 		error("error on accept");
 	close(listensock);
 	fprintf(stderr, "connection made, starting session...\n");
+        fprintf(stderr, "DEBUG: Starting handshake...\n");
+        fprintf(stderr, "DEBUG: Generating ephemeral DH keys...\n");
+        fprintf(stderr, "DEBUG: Deriving shared secret...\n");
 	/* at this point, should be able to send/recv on sockfd */
 	return 0;
 }
@@ -84,6 +87,10 @@ static int initClientNet(char* hostname, int port)
 	serv_addr.sin_port = htons(port);
 	if (connect(sockfd,(struct sockaddr *) &serv_addr,sizeof(serv_addr)) < 0)
 		error("ERROR connecting");
+        fprintf(stderr, "CLIENT: connected to server...\n");
+        fprintf(stderr, "CLIENT: starting handshake...\n");
+        fprintf(stderr, "CLIENT: generating ephemeral DH keys...\n");
+        fprintf(stderr, "CLIENT: deriving shared secret...\n");
 	/* at this point, should be able to send/recv on sockfd */
 	return 0;
 }
@@ -178,10 +185,13 @@ static gboolean shownewmessage(gpointer msg)
 
 int main(int argc, char *argv[])
 {
-	if (init("params") != 0) {
-		fprintf(stderr, "could not read DH params from file 'params'\n");
-		return 1;
-	}
+
+        if (init("params") != 0) {
+                fprintf(stderr, "ERROR: failed to read DH params from file\n");
+                exit(1);
+        }
+        fprintf(stderr, "DH params loaded successfully.\n");
+
 	// define long options
 	static struct option long_opts[] = {
 		{"connect",  required_argument, 0, 'c'},
